@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BLL;
 using Entity;
 
@@ -18,8 +14,6 @@ namespace Presentacion
             string identificacion;
 
 
-           
-
             Console.WriteLine("Digite la identificacion");
             identificacion = Console.ReadLine();
 
@@ -32,15 +26,51 @@ namespace Presentacion
             Console.WriteLine("Digite la edad");
             edad = int.Parse(Console.ReadLine());
 
-            Persona persona = new Persona(identificacion,nombre,edad,sexo);
+            Persona persona = new Persona(identificacion, nombre, edad, sexo);
             PersonaService personaService = new PersonaService();
-            persona.Pulsacion=personaService.CalcularPulsacion(sexo,edad);
-            
-            Console.WriteLine($"Su Pulsaciones {persona.Pulsacion}");
+            persona.Pulsacion = personaService.CalcularPulsacion(sexo, edad);
+            string message = personaService.Guardar(persona);
+            Console.WriteLine($"Su Pulsaciones {persona.Pulsacion} " + message);
+
+            PersonaResponse personaResponse = personaService.BuscarPorIdentificacion("1");
+            if (personaResponse.PersonaEncontrada == true)
+                Console.WriteLine(personaResponse.Persona.ToString());
+            else
+            {
+                Console.WriteLine(personaResponse.Message);
+            }
+
+            Consultar(personaService);
+
+            Console.WriteLine("Eliminar Personas");
+            Console.WriteLine("Digite la identificacion");
+            identificacion = Console.ReadLine();
+            string messageEliminacion = personaService.Eliminar(identificacion);
+            Console.WriteLine(messageEliminacion);
+
+            Consultar(personaService);
+
 
             Console.ReadKey();
 
 
+        }
+
+        private static void Consultar(PersonaService personaService)
+        {
+            ConsultaPersonaResponse consultaPersonaResponse = personaService.ConsultarTodos();
+            if (consultaPersonaResponse.PersonaEncontrada == true)
+            {
+                Console.WriteLine("Lista de Personas");
+                foreach (var item in consultaPersonaResponse.Personas)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine(consultaPersonaResponse.Message);
+            }
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Entity
 {
     public class Persona
@@ -27,6 +22,10 @@ namespace Entity
         public int Edad { get; set; }
         public string Sexo { get; set; }
         public decimal Pulsacion { get; set; }
-        
+        public override string ToString()
+        {
+            return $"Identificacion: {Identificacion} - Nombre:{Nombre}-Edad:{Edad} -Sexo:{Sexo} -Pulsacion: {Pulsacion} ";
+        }
+
     }
 }
