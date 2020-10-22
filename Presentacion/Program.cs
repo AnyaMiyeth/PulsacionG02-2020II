@@ -28,7 +28,7 @@ namespace Presentacion
 
             Persona persona = new Persona(identificacion, nombre, edad, sexo);
             PersonaService personaService = new PersonaService();
-            persona.Pulsacion = personaService.CalcularPulsacion(sexo, edad);
+            persona.CalcularPulsacion();
             string message = personaService.Guardar(persona);
             Console.WriteLine($"Su Pulsaciones {persona.Pulsacion} " + message);
 

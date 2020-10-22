@@ -22,5 +22,15 @@ namespace PresentacionGUI
             FrmRegistroPersona frmRegistro = new FrmRegistroPersona();
             frmRegistro.Show();
         }
+
+        private void consultaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FrmConsultar().Show();
+        }
+
+        private void salirToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }
