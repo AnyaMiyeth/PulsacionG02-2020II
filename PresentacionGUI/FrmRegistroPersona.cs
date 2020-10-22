@@ -1,50 +1,89 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BLL;
 using Entity;
-using BLL;
+using System;
 using System.Windows.Forms;
 
 namespace PresentacionGUI
 {
     public partial class FrmRegistroPersona : Form
     {
+        private PersonaService servicePersona;
         public FrmRegistroPersona()
         {
             InitializeComponent();
-           
-        }
-
-        private void FrmRegistroPersona_Load(object sender, EventArgs e)
-        {
-
+            servicePersona = new PersonaService();
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
+            string mensaje = Guardar();
+            MessageBox.Show(mensaje, "Información al Guardar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
+
+        private bool ValidarTextosVacios()
+        {
+            foreach (Control x in this.Controls)
+            {
+                if (x is TextBox && x.Name != "TxtPulsacion")
+                {
+                    if (String.IsNullOrEmpty(((TextBox)x).Text))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        private bool LimpiarTexto()
+        {
+            foreach (Control x in this.Controls)
+            {
+                if (x is TextBox)
+                {
+                    ((TextBox)x).Text= "";
+                }
+            }
+            return true;
+        }
+        private string Guardar()
+        {
+            if (ValidarTextosVacios())
+            {
+                Persona persona = MapearTextoAPersona();
+                string mensaje = servicePersona.Guardar(persona);
+                return mensaje;
+            }
+            else
+            {
+                return "Los datos suministrados están incompletos";
+            }
+        }
+
+        private Persona MapearTextoAPersona()
+        {
             Persona persona = new Persona();
             persona.Identificacion = TxtIdentificacion.Text;
             persona.Nombre = TxtNombre.Text;
             persona.Edad = int.Parse(TxtEdad.Text);
-            if (CmbSexo.Text.Equals("Femenino"))
+            persona.Sexo = MapearComboASexo(CmbSexo.Text);
+            persona.CalcularPulsacion();
+            TxtPulsacion.Text = persona.Pulsacion.ToString();
+            return persona;
+        }
+
+        private string MapearComboASexo(string sexo)
+        {
+            if (sexo.Equals("Femenino"))
             {
-                persona.Sexo = "F";
+                return "F";
             }
             else
             {
-                persona.Sexo = "M";
+                return "M";
             }
-            PersonaService service = new PersonaService();
-            string mensaje=service.Guardar(persona);
-            MessageBox.Show(mensaje);
         }
-
-      
     }
 }
