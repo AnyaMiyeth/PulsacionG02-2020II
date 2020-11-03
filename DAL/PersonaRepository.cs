@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DAL
 {
@@ -97,6 +98,37 @@ namespace DAL
             }
 
         }
+        public List<Persona> FiltrarSexo(string sexo)
+        {
+            return ConsultarTodos().Where(p => p.Sexo.Equals(sexo)).ToList();
+        }
 
+        public List<Persona> FiltrarPorHombres()
+        {
+
+            List<Persona> personas= ConsultarTodos();
+            List<Persona> personasFiltradas =
+                (from persona in personas
+                where persona.Sexo.Equals("M")
+                select persona).ToList();
+            return personasFiltradas;
+        }
+
+        public List<Persona> FiltrarPorMujeres()
+        {
+
+            List<Persona> personas = ConsultarTodos();
+            return personas.Where(p=>p.Edad>5 && p.Edad<10).ToList();
+        }
+
+        public int ContarSexo(string sexo)
+        {
+            return ConsultarTodos().Count(p=>p.Sexo.Equals(sexo));
+        }
+
+        public List<Persona> FiltroPorNombre(string nombre)
+        {
+            return ConsultarTodos().Where(p => p.Nombre.Contains(nombre)).ToList();
+        }
     }
 }

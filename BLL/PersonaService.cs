@@ -6,12 +6,11 @@ namespace BLL
 {
     public class PersonaService
     {
-        private PersonaRepository personaRepository;
+        private readonly PersonaRepository personaRepository;
         public PersonaService()
         {
             personaRepository = new PersonaRepository();
         }
-        
         public string Guardar(Persona persona)
         {
             try
@@ -56,48 +55,69 @@ namespace BLL
         }
         public PersonaResponse BuscarPorIdentificacion(string identificacion)
         {
-            PersonaResponse personaResponse;
+         
             try
             {            
                 Persona persona = personaRepository.Buscar(identificacion);
                 if (persona != null)
                 {
-                   return personaResponse = new PersonaResponse(persona);
+                   return  new PersonaResponse(persona);
                 }
                 else
                 {
-                    return personaResponse = new PersonaResponse("La Persona buscada no se encuentra Registrada");
+                    return  new PersonaResponse("La Persona buscada no se encuentra Registrada");
                 }
                 
             }
             catch (Exception e)
             {
 
-                return personaResponse = new PersonaResponse("Error de Aplicacion: "+e.Message);
+                return  new PersonaResponse("Error de Aplicacion: "+e.Message);
             }
             
         }
         public  ConsultaPersonaResponse ConsultarTodos()
         {
 
-            ConsultaPersonaResponse personaResponse;
             try
             {
                 List<Persona> personas = personaRepository.ConsultarTodos();
                 if (personas != null)
                 { 
-                    return personaResponse = new ConsultaPersonaResponse(personas);
+                    return  new ConsultaPersonaResponse(personas);
                 }
                 else
                 {
-                    return personaResponse = new ConsultaPersonaResponse("La Persona buscada no se encuentra Registrada");
+                    return  new ConsultaPersonaResponse("La Persona buscada no se encuentra Registrada");
                 }
 
             }
             catch (Exception e)
             {
 
-                return personaResponse = new ConsultaPersonaResponse("Error de Aplicacion: " + e.Message);
+                return  new ConsultaPersonaResponse("Error de Aplicacion: " + e.Message);
+            }
+        }
+        public ConsultaPersonaResponse ConsultarPorSexo(string sexo)
+        {
+
+            try
+            {
+                List<Persona> personas = personaRepository.FiltrarSexo(sexo);
+                if (personas != null)
+                {
+                    return new ConsultaPersonaResponse(personas);
+                }
+                else
+                {
+                    return new ConsultaPersonaResponse("La Persona buscada no se encuentra Registrada");
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                return new ConsultaPersonaResponse("Error de Aplicacion: " + e.Message);
             }
         }
     }
@@ -106,36 +126,36 @@ namespace BLL
     {
         public Persona Persona { get; set; }
         public string Message { get; set; }
-        public bool PersonaEncontrada { get; set; }
+        public bool Encontrado { get; set; }
 
         public PersonaResponse(Persona persona)
         {
             Persona = new Persona();
             Persona = persona;
-            PersonaEncontrada = true;
+            Encontrado = true;
         }
         public PersonaResponse(string message)
         {
             Message = message;
-            PersonaEncontrada = false;
+            Encontrado = false;
         }
     }
     public class ConsultaPersonaResponse
     {
         public List<Persona> Personas { get; set; }
         public string Message { get; set; }
-        public bool PersonaEncontrada { get; set; }
+        public bool Encontrado { get; set; }
 
         public ConsultaPersonaResponse(List<Persona> personas)
         {
             Personas = new List<Persona>();
             Personas = personas;
-            PersonaEncontrada = true;
+            Encontrado = true;
         }
         public ConsultaPersonaResponse(string message)
         {
             Message = message;
-            PersonaEncontrada = false;
+            Encontrado = false;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace PresentacionGUI
 {
     public partial class FrmRegistroPersona : Form
     {
-        private PersonaService servicePersona;
+        private readonly PersonaService servicePersona;
         public FrmRegistroPersona()
         {
             InitializeComponent();
@@ -19,31 +19,17 @@ namespace PresentacionGUI
             string mensaje = Guardar();
             MessageBox.Show(mensaje, "Información al Guardar", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
-        private bool ValidarTextosVacios()
+        private void BtnLimpiar_Click(object sender, EventArgs e)
         {
-            foreach (Control x in this.Controls)
-            {
-                if (x is TextBox && x.Name != "TxtPulsacion")
-                {
-                    if (String.IsNullOrEmpty(((TextBox)x).Text))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            LimpiarTexto();
         }
-
-
         private bool LimpiarTexto()
         {
-            foreach (Control x in this.Controls)
+            foreach (Control itemControl in this.Controls)
             {
-                if (x is TextBox)
+                if (itemControl is TextBox || itemControl is ComboBox)
                 {
-                    ((TextBox)x).Text= "";
+                    itemControl.Text= "";
                 }
             }
             return true;
@@ -62,9 +48,31 @@ namespace PresentacionGUI
             }
         }
 
+        private string Buscar(string identificacion)
+        {
+            
+            if (!String.IsNullOrEmpty(identificacion))
+            {
+                var response = servicePersona.BuscarPorIdentificacion(identificacion);
+                if (!response.Encontrado)
+                {
+                    return response.Message;
+                }
+                else
+                {
+                    MapearPersonaATexto(response.Persona);
+                    return "Persona Encontrada";
+                }
+                
+            }
+            else
+            {
+                return "Digite una Identificación Válida";
+            }
+        }
         private Persona MapearTextoAPersona()
         {
-            Persona persona = new Persona();
+            var persona = new Persona();
             persona.Identificacion = TxtIdentificacion.Text;
             persona.Nombre = TxtNombre.Text;
             persona.Edad = int.Parse(TxtEdad.Text);
@@ -74,6 +82,14 @@ namespace PresentacionGUI
             return persona;
         }
 
+        private void MapearPersonaATexto(Persona persona)
+        {
+            TxtIdentificacion.Text=persona.Identificacion;
+            TxtNombre.Text=persona.Nombre;
+            TxtEdad.Text=persona.Edad.ToString();
+            CmbSexo.Text=persona.Sexo;
+            TxtPulsacion.Text = persona.Pulsacion.ToString();
+        }
         private string MapearComboASexo(string sexo)
         {
             if (sexo.Equals("Femenino"))
@@ -84,6 +100,28 @@ namespace PresentacionGUI
             {
                 return "M";
             }
+        }
+
+        
+        private bool ValidarTextosVacios()
+        {
+            foreach (Control itemControl in this.Controls)
+            {
+                if (itemControl is TextBox && itemControl.Name != "TxtPulsacion")
+                {
+                    if (String.IsNullOrEmpty(((TextBox)itemControl).Text))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+           string mensaje= Buscar(TxtIdentificacion.Text);
+            MessageBox.Show(mensaje, "Información al Consultar", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
