@@ -26,30 +26,36 @@ namespace PresentacionGUI
             var response = personaService.ConsultarTodos();
             if (response.Encontrado)
             {
-                // Create an unbound DataGridView by declaring a column count.
-                DtgPersona.ColumnCount = 4;
-                DtgPersona.ColumnHeadersVisible = true;
-
-                // Set the column header style.
-                DataGridViewCellStyle columnHeaderStyle = new DataGridViewCellStyle();
-
-                columnHeaderStyle.BackColor = Color.Beige;
-                columnHeaderStyle.Font = new Font("Verdana", 9, FontStyle.Bold);
-                DtgPersona.ColumnHeadersDefaultCellStyle = columnHeaderStyle;
+                ConfigurarGrid();
 
                 DtgPersona.Columns[0].Name = "Identificacion";
                 DtgPersona.Columns[1].Name = "Nombre";
                 DtgPersona.Columns[2].Name = "Pulsaciones";
                 DtgPersona.Columns[3].Name = "Edad";
+                DtgPersona.Columns[4].Name = "Sexo";
                 foreach (var item in response.Personas)
                 {
-                    DtgPersona.Rows.Add(item.Identificacion, item.Nombre, item.Pulsacion,item.Edad);
+                    DtgPersona.Rows.Add(item.Identificacion, item.Nombre, item.Pulsacion, item.Edad, item.Sexo);
                 }
             }
             else
             {
                 MessageBox.Show(response.Message, "Información al Consultar", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void ConfigurarGrid()
+        {
+            // Create an unbound DataGridView by declaring a column count.
+            DtgPersona.ColumnCount = 4;
+            DtgPersona.ColumnHeadersVisible = true;
+
+            // Set the column header style.
+            DataGridViewCellStyle columnHeaderStyle = new DataGridViewCellStyle();
+
+            columnHeaderStyle.BackColor = Color.Beige;
+            columnHeaderStyle.Font = new Font("Verdana", 9, FontStyle.Bold);
+            DtgPersona.ColumnHeadersDefaultCellStyle = columnHeaderStyle;
         }
 
         private void FrmConsultar_Load(object sender, EventArgs e)
